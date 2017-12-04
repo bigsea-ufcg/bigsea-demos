@@ -2,6 +2,7 @@ import os_connector
 import ConfigParser
 import json
 import requests
+import subprocess
 
 # Conf reading
 config = ConfigParser.RawConfigParser()
@@ -92,6 +93,10 @@ body = dict(plugin=plugin, scaler_plugin=scaler_plugin,
             job_type=job_type, version=version,
             opportunistic_slave_ng=opportunistic_slave_ng, slave_ng=slave_ng,
             master_ng=master_ng, net_id=net_id, dependencies=dependencies)
+
+#Start LB
+lb_exec = subprocess.Popen('bash run_lb.sh', shell=True)
+
 
 url = "http://%s:%s/manager/execute" % (ip, port)
 print "Making request to", url
