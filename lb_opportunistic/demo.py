@@ -5,7 +5,7 @@ import requests
 
 # Conf reading
 config = ConfigParser.RawConfigParser()
-config.read('./lb_opportunistic.cfg')
+config.read('./emaas.cfg')
 
 user = config.get('credentials', 'user')
 password = config.get('credentials', 'password')
@@ -29,12 +29,6 @@ spark_pi_exec = os_connector.create_job_execution(saharaclient,
                                                   configs=spark_pi_configs)
 
 # Start EMaaS cluster
-
-config = ConfigParser.RawConfigParser()
-#__file__ = os.path.join(sys.path[0], sys.argv[1])
-config.read('./emmas.cfg')
-
-
 plugin = config.get('manager', 'plugin')
 ip = config.get('manager', 'ip')
 port = config.get('manager', 'port')
