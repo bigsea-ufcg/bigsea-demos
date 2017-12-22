@@ -18,16 +18,16 @@ saharaclient = os_connector.get_sahara_client(user, password, project_id,
                                               auth_ip, domain)
 
 # Submit pi job to running cluster
-spark_pi_cluster_id = '5149da78-f896-42c9-9eea-a1abfc6f020a'
-spark_pi_job_id = 'ce52a8e5-4ccb-450e-91ce-ac4429cb9a18'
-
-spark_pi_configs = os_connector.get_job_configs(args=['4'],
-                                                main_class='main')
-
-spark_pi_exec = os_connector.create_job_execution(saharaclient,
-                                                  spark_pi_job_id,
-                                                  spark_pi_cluster_id,
-                                                  configs=spark_pi_configs)
+#spark_pi_cluster_id = '5149da78-f896-42c9-9eea-a1abfc6f020a'
+#spark_pi_job_id = 'ce52a8e5-4ccb-450e-91ce-ac4429cb9a18'
+#
+#spark_pi_configs = os_connector.get_job_configs(args=['4'],
+#                                                main_class='main')
+#
+#spark_pi_exec = os_connector.create_job_execution(saharaclient,
+#                                                  spark_pi_job_id,
+#                                                  spark_pi_cluster_id,
+#                                                  configs=spark_pi_configs)
 
 # Start EMaaS cluster
 plugin = config.get('manager', 'plugin')
@@ -52,10 +52,12 @@ plugin_app = config.get('plugin', 'plugin_app')
 expected_time = config.getint('plugin', 'expected_time')
 collect_period = config.getint('plugin', 'collect_period')
 openstack_plugin = config.get('plugin', 'openstack_plugin')
+number_of_jobs = config.get('plugin', 'number_of_jobs')
 job_type = config.get('plugin', 'job_type')
 version = '2.1.0'
 cluster_id = config.get('plugin', 'cluster_id')
 slave_ng = config.get('plugin', 'slave_ng')
+percentage = config.get('plugin', 'percentage')
 opportunistic_slave_ng = config.get('plugin', 'opportunistic_slave_ng')
 master_ng = config.get('plugin', 'master_ng')
 net_id = config.get('plugin', 'net_id')
@@ -63,6 +65,8 @@ actuator = config.get('scaler', 'actuator')
 starting_cap = config.get('scaler', 'starting_cap')
 
 scaler_plugin = config.get('scaler', 'scaler_plugin')
+app_name = config.get('scaler', 'app_name')
+days = config.get('scaler', 'days')
 scaling_parameters = {}
 scaling_parameters['actuator'] = config.get('scaler', 'actuator')
 scaling_parameters['metric_source'] = config.get('scaler', 'metric_source')
@@ -82,21 +86,21 @@ scaling_parameters['metric_rounding'] = config.getint('scaler',
 headers = {'Content-Type': 'application/json'}
 body = dict(plugin=plugin, scaler_plugin=scaler_plugin,
             scaling_parameters=scaling_parameters, cluster_size=cluster_size,
-            starting_cap=starting_cap, actuator=actuator, flavor_id=flavor_id,
-            image_id=image_id, opportunistic=opportunistic, args=args,
-            main_class=main_class, job_template_name=job_template_name,
+            percentage=percentage, starting_cap=starting_cap,
+            actuator=actuator, flavor_id=flavor_id, image_id=image_id,
+            opportunistic=opportunistic, args=args, main_class=main_class,
+            job_template_name=job_template_name, number_of_jobs=number_of_jobs,
             job_binary_name=job_binary_name, job_binary_url=job_binary_url,
-            input_ds_id=input_ds_id, output_ds_id=output_ds_id,
+            input_ds_id=input_ds_id, output_ds_id=output_ds_id, days=days,
             plugin_app=plugin_app, expected_time=expected_time,
             collect_period=collect_period, bigsea_username=bigsea_username,
             bigsea_password=bigsea_password, openstack_plugin=openstack_plugin,
-            job_type=job_type, version=version,
+            job_type=job_type, version=version, app_name=app_name,
             opportunistic_slave_ng=opportunistic_slave_ng, slave_ng=slave_ng,
             master_ng=master_ng, net_id=net_id, dependencies=dependencies)
 
 #Start LB
 lb_exec = subprocess.Popen('bash run_lb.sh', shell=True)
-
 
 url = "http://%s:%s/manager/execute" % (ip, port)
 print "Making request to", url
