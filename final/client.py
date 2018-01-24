@@ -4,6 +4,7 @@ import os
 import requests
 import sys
 import uuid
+import time
 
 
 config = ConfigParser.RawConfigParser()
@@ -74,9 +75,28 @@ body = dict(plugin=plugin, scaler_plugin=scaler_plugin, percentage=percentage,
 	job_type=job_type, version=version, opportunistic_slave_ng=opportunistic_slave_ng,
     slave_ng=slave_ng, master_ng=master_ng, net_id=net_id, dependencies=dependencies
 	)
+
+###############
+
 url = "http://%s:%s/manager/execute" % (ip, port)
-print "Making request to", url
 body_log = body.copy()
-print "Passing arguments as", body_log
 r = requests.post(url, headers=headers, data=json.dumps(body))
-print r.content
+
+app_id =  r.content.replace("\"", "")
+print "Application id: %s" % app_id
+
+url_status = "http://%s:%s/manager/logs/execution/%s" % (ip, port, app_id)
+url_execution_log = "http://%s:%s/manager/logs/std/%s" % (ip, port, app_id)
+
+old_status = []
+
+while(True):
+    r_status = requests.get(url_status)
+
+    for line in r_status.json():
+        if line not in old_status:
+            old_status.append(line)
+        if "Finished" in line:
+            exit()
+
+    time.sleep(60)
