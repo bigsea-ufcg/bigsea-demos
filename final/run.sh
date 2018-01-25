@@ -1,20 +1,22 @@
 #!/bin/bash
 
+echo "=== BIGSEA WP3 DEMO ==="
+echo ""
 echo "======== BEGIN ========"
 
-echo "1. BULMA"
+printf "\n1. BULMA\n"
 python client.py config/bulma.cfg
 
-echo "2. BUSTE"
+printf "\n2. BUSTE\n"
 python client.py config/buste.cfg
 
-echo "3. OD matrix builder"
+printf "\n3. OD matrix builder\n"
 python client.py config/od.cfg
 
-echo "4. Pre-processing"
+printf "\n4. Pre-processing\n"
 python client.py config/preproc.cfg
 
-echo "5. Training"
+printf "\n5. Training\n"
 python client.py config/train.cfg
 
 echo "========= END ========="

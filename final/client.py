@@ -76,8 +76,6 @@ body = dict(plugin=plugin, scaler_plugin=scaler_plugin, percentage=percentage,
     slave_ng=slave_ng, master_ng=master_ng, net_id=net_id, dependencies=dependencies
 	)
 
-###############
-
 url = "http://%s:%s/manager/execute" % (ip, port)
 body_log = body.copy()
 r = requests.post(url, headers=headers, data=json.dumps(body))
@@ -86,7 +84,6 @@ app_id =  r.content.replace("\"", "")
 print "Application id: %s" % app_id
 
 url_status = "http://%s:%s/manager/logs/execution/%s" % (ip, port, app_id)
-url_execution_log = "http://%s:%s/manager/logs/std/%s" % (ip, port, app_id)
 
 old_status = []
 
