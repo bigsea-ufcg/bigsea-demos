@@ -4,7 +4,7 @@ echo "=== BIGSEA WP3 DEMO ==="
 echo ""
 echo "======== BEGIN ========"
 
-printf "\n1. BULMA\n"
+printf "1. BULMA\n"
 python client.py config/bulma.cfg
 
 printf "\n2. BUSTE\n"
