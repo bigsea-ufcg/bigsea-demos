@@ -3,8 +3,10 @@
 echo "=== BIGSEA WP3 DEMO ==="
 echo ""
 echo "======== BEGIN ========"
+printf "Cleaning remote hdfs\n"
+ssh -i ~/.ssh/bigsea ubuntu@10.11.4.225 "source /home/ubuntu/clean.sh"
 
-printf "1. BULMA\n"
+printf "\n1. BULMA\n"
 python client.py config/"$1"/bulma.cfg
 
 printf "\n2. BUSTE\n"
