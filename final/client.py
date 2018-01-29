@@ -77,23 +77,47 @@ body = dict(plugin=plugin, scaler_plugin=scaler_plugin, percentage=percentage,
 	)
 
 url = "http://%s:%s/manager/execute" % (ip, port)
+print "Making request to", url
 body_log = body.copy()
 r = requests.post(url, headers=headers, data=json.dumps(body))
 
 app_id =  r.content.replace("\"", "")
-print "Application id: %s" % app_id
 
 url_status = "http://%s:%s/manager/logs/execution/%s" % (ip, port, app_id)
+url_execution_log = "http://%s:%s/manager/logs/std/%s" % (ip, port, app_id)
 
 old_status = []
 
+if os.path.exists(app_id):
+    subprocess.call("rm -rf %s" % app_id, shell=True)
+
+os.mkdir(app_id)
+
+f = open("%s/execution" % app_id, "w")
 while(True):
     r_status = requests.get(url_status)
 
     for line in r_status.json():
         if line not in old_status:
+            print str(line)
+            f.write(str(line)+"\n")
             old_status.append(line)
         if "Finished" in line:
+            std = requests.get(url_execution_log).json()
+
+            err = open("%s/stderr" % app_id, "w")
+            err.write(str(std[1]))
+            err.close()
+
+            out = open("%s/stdout" % app_id, "w")
+            out.write(str(std[0]))
+            out.close()
+
+            f.close()
+
+            print """See stderr and stdout files to 
+                  more details of application execution"""
+
             exit()
 
-    time.sleep(60)
+    time.sleep(5)

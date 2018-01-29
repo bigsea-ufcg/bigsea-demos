@@ -1,11 +1,12 @@
 #!/bin/bash
 
-echo "=== BIGSEA WP3 DEMO ==="
+echo   "=== BIGSEA WP3 DEMO ==="
 echo ""
-echo "======== BEGIN ========"
-printf "Cleaning remote hdfs\n"
+echo   "======== BEGIN ========"
+printf "---- Cleaning existing files ----\n"
 ssh -i ~/.ssh/bigsea ubuntu@10.11.4.225 "source /home/ubuntu/clean.sh"
 
+printf "\n---- Running applications ----\n"
 printf "\n1. BULMA\n"
 python client.py config/"$1"/bulma.cfg
 
