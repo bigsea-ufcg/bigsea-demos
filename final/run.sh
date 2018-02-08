@@ -3,11 +3,12 @@
 echo   "=== BIGSEA WP3 DEMO ==="
 echo ""
 echo   "======== BEGIN ========"
-printf "==== Cleaning existing files ====\n"
-ssh -i ~/.ssh/bigsea ubuntu@10.11.4.225 "source /home/ubuntu/clean.sh"
+echo "-> Cleaning existing files, please wait"
+ssh -i ~/.ssh/bigsea ubuntu@10.11.4.225 "source /home/ubuntu/clean.sh" &> /dev/null
 
-printf "\n==== Running applications ====\n"
-printf "\n1. BULMA\n"
+echo ""
+echo "-> Running applications"
+printf "1. BULMA\n"
 python client.py config/"$1"/bulma.cfg
 
 printf "\n2. BUSTE\n"

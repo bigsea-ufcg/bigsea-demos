@@ -61,6 +61,16 @@ scaling_parameters['max_cap'] = config.getint('scaler', 'max_cap')
 scaling_parameters['actuation_size'] = config.getint('scaler', 'actuation_size')
 scaling_parameters['metric_rounding'] = config.getint('scaler', 'metric_rounding')
 
+if scaler_plugin == 'proportional_derivative':
+    heuristic_options = {}
+    heuristic_options['heuristic_name'] = config.get('scaler', 'heuristic_name')
+    heuristic_options['proportional_factor'] = config.getfloat('scaler', 'proportional_factor')
+    heuristic_options['derivative_factor'] = config.getint('scaler', 'derivative_factor')
+    heuristic_options['integrative_factor'] = config.getint('scaler', 'integrative_factor')
+
+    scaling_parameters['heuristic_options'] = heuristic_options
+    
+
 headers = {'Content-Type': 'application/json'}
 body = dict(plugin=plugin, scaler_plugin=scaler_plugin, percentage=percentage,
 	scaling_parameters=scaling_parameters, cluster_size=cluster_size,
@@ -88,12 +98,13 @@ url_execution_log = "http://%s:%s/manager/logs/std/%s" % (ip, port, app_id)
 
 old_status = []
 
-if os.path.exists(app_id):
-    subprocess.call("rm -rf %s" % app_id, shell=True)
+path = 'logs/%s' % app_id
+if os.path.exists(path):
+    subprocess.call("rm -rf %s" % path, shell=True)
 
-os.mkdir(app_id)
+os.mkdir(path)
 
-f = open("%s/execution" % app_id, "w")
+f = open("%s/execution" % path, "w")
 while(True):
     r_status = requests.get(url_status)
 
@@ -105,19 +116,19 @@ while(True):
         if "Finished" in line:
             std = requests.get(url_execution_log).json()
 
-            err = open("%s/stderr" % app_id, "w")
+            err = open("%s/stderr" % path, "w")
             err.write(str(std[1]))
             err.close()
 
-            out = open("%s/stdout" % app_id, "w")
+            out = open("%s/stdout" % path, "w")
             out.write(str(std[0]))
             out.close()
 
             f.close()
 
-            print """See stderr and stdout files to 
-                  more details of application execution"""
 
             exit()
 
     time.sleep(5)
+
+print """See stderr and stdout files to more details of application execution"""
