@@ -1,8 +1,14 @@
-import os_connector
+import argparse
 import ConfigParser
+import os_connector
+import helpers
 import json
 import requests
 import subprocess
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('index', type=int, help='an index of execution')
+input_args = parser.parse_args()
 
 # Conf reading
 config = ConfigParser.RawConfigParser()
@@ -18,16 +24,22 @@ saharaclient = os_connector.get_sahara_client(user, password, project_id,
                                               auth_ip, domain)
 
 # Submit pi job to running cluster
-#spark_pi_cluster_id = '5149da78-f896-42c9-9eea-a1abfc6f020a'
-#spark_pi_job_id = 'ce52a8e5-4ccb-450e-91ce-ac4429cb9a18'
+# spark_pi_cluster_id = '5149da78-f896-42c9-9eea-a1abfc6f020a'
+# spark_pi_job_id = 'ce52a8e5-4ccb-450e-91ce-ac4429cb9a18'
 #
-#spark_pi_configs = os_connector.get_job_configs(args=['4'],
-#                                                main_class='main')
+# spark_pi_configs = os_connector.get_job_configs(args=['4'],
+#                                                 main_class='main')
 #
-#spark_pi_exec = os_connector.create_job_execution(saharaclient,
-#                                                  spark_pi_job_id,
-#                                                  spark_pi_cluster_id,
-#                                                  configs=spark_pi_configs)
+# spark_pi_exec = os_connector.create_job_execution(saharaclient,
+#                                                   spark_pi_job_id,
+#                                                   spark_pi_cluster_id,
+#                                                   configs=spark_pi_configs)
+
+index = input_args.index
+#helpers.start_workload('10.11.4.87', '1')
+#helpers.start_workload('10.11.4.66', '1')
+#helpers.start_workload('10.11.4.73', '1')
+
 
 # Start EMaaS cluster
 plugin = config.get('manager', 'plugin')
@@ -42,6 +54,10 @@ bigsea_password = config.get('manager', 'bigsea_password')
 opportunistic = config.get('plugin', 'opportunistic')
 dependencies = config.get('plugin', 'dependencies')
 args = config.get('plugin', 'args').split()
+output = ('hdfs://10.11.4.225/user/ubuntu/wp3-demo/output/' +
+          'bulma_telles_output/%s/' % index)
+args[2] = output
+
 main_class = config.get('plugin', 'main_class')
 job_template_name = config.get('plugin', 'job_template_name')
 job_binary_name = config.get('plugin', 'job_binary_name')
@@ -100,7 +116,7 @@ body = dict(plugin=plugin, scaler_plugin=scaler_plugin,
             master_ng=master_ng, net_id=net_id, dependencies=dependencies)
 
 #Start LB
-lb_exec = subprocess.Popen('bash run_lb.sh', shell=True)
+#lb_exec = subprocess.Popen('bash run_lb.sh', shell=True)
 
 url = "http://%s:%s/manager/execute" % (ip, port)
 print "Making request to", url

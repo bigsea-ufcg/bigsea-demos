@@ -9,4 +9,4 @@ cd $LB_PATH
 # Export the PYTHONPATH variable
 export PYTHONPATH=':'`pwd`
 # Execute the LoadBalancer
-python loadbalancer/cli/main.py &> /dev/null
+python loadbalancer/cli/main.py #&> /dev/null
